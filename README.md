@@ -1,5 +1,5 @@
 # home-rpi-k3s-cluster
-How to configure and create a K3s Kubernetes Cluster on raspberry pi(s), with MetalLB and Nginx Ingress installed.
+How to configure and create a K3s Kubernetes Cluster on raspberry pi(s), with MetalLB and Nginx Ingress installed, utilizing Kustomization and Kustomized Helm Charts.
 
 ## Step 1.) - Raspberry Pi Setup
 - Use Raspberry Pi Imager (https://www.raspberrypi.com/software/) to write Ubuntu Server 20.04 LTS (64-BIT) to sd card
@@ -39,8 +39,12 @@ ethernets:
 - cd in the repo `cd home-rpi-k3s-cluster`
 - edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP. `sed 's/192.168.1.x-192.168.1.x/<your-ip-range>/g' kustomize/metallb/metallb-ip-pool.yaml`
 - Install MetalLB `kubectl apply -k kustomize/metallb/.`
-- FYI - To get the latest metallb deployment, run the following command  before running kubectl apply `MetalLB_RTAG=$(curl -s https://api.github.com/repos/metallb/metallb/releases/latest|grep tag_name|cut -d '"' -f 4|sed 's/v//') && wget https://raw.githubusercontent.com/metallb/metallb/v$MetalLB_RTAG/config/manifests/metallb-native.yaml -O kustomize/metallb/metallb-deployment.yaml`
 
 ## Step 4.) - Install Nginx Ingress on K3s Cluster
 - FYI - `kustomize/nginx-ingress/release.yaml` was created with the following command `helm template nginx-ingress charts/nginx-ingress -f kustomize/nginx-ingress/values.yaml --include-crds --debug > kustomize/nginx-ingress/release.yaml`
-- - Install Nginx Ingress `kubectl apply -k kustomize/nginx-ingress/.`
+- Install Nginx Ingress `kubectl apply -k kustomize/nginx-ingress/.`
+
+
+## Misc
+- To get the latest metallb deployment, run the following command  before running kubectl apply `MetalLB_RTAG=$(curl -s https://api.github.com/repos/metallb/metallb/releases/latest|grep tag_name|cut -d '"' -f 4|sed 's/v//') && wget https://raw.githubusercontent.com/metallb/metallb/v$MetalLB_RTAG/config/manifests/metallb-native.yaml -O kustomize/metallb/metallb-deployment.yaml`
+- FYI - `kustomize/nginx-ingress/release.yaml` was created with the following command `helm template nginx-ingress charts/nginx-ingress -f kustomize/nginx-ingress/values.yaml --include-crds --debug > kustomize/nginx-ingress/release.yaml`
