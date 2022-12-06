@@ -34,9 +34,13 @@ ethernets:
 - export kubeconfig `echo "export KUBECONFIG=~/.kube/config" >> ~/.bashrc && source ~/.bashrc`
 - install helm `curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash`
 
-## Step 3.) - Install MetalLB on K3s Cluster
-- edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP.
-- FYI - if you want to get the latest metallb deplopyment, run the following command`MetalLB_RTAG=$(curl -s https://api.github.com/repos/metallb/metallb/releases/latest|grep tag_name|cut -d '"' -f 4|sed 's/v//') && wget https://raw.githubusercontent.com/metallb/metallb/v$MetalLB_RTAG/config/manifests/metallb-native.yaml -O kustomize/metallb/metallb-deployment.yaml` This will override the existing `ustomize/metallb/metallb-deployment.yaml` file.
+## Step 3.) - Install MetalLB on K3s 
+- Clone this repo `git clone https://github.com/philgladman/home-rpi-k3s-cluster.git`
+- cd in the repo `cd home-rpi-k3s-cluster`
+- edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP. `sed 's/192.168.1.x-192.168.1.x/<your-ip-range>/g' kustomize/metallb/metallb-ip-pool.yaml`
+- Install MetalLB `kubectl apply -k kustomize/metallb/.`
+- FYI - To get the latest metallb deployment, run the following command  before running kubectl apply `MetalLB_RTAG=$(curl -s https://api.github.com/repos/metallb/metallb/releases/latest|grep tag_name|cut -d '"' -f 4|sed 's/v//') && wget https://raw.githubusercontent.com/metallb/metallb/v$MetalLB_RTAG/config/manifests/metallb-native.yaml -O kustomize/metallb/metallb-deployment.yaml`
 
 ## Step 4.) - Install Nginx Ingress on K3s Cluster
-- If your K3s cluster already has Nginx Ingress installed, move onto step [## Step 5.) - Turn off systemd-resolver (Ubuntu)]
+- FYI - `kustomize/nginx-ingress/release.yaml` was created with the following command `helm template nginx-ingress charts/nginx-ingress -f kustomize/nginx-ingress/values.yaml --include-crds --debug > kustomize/nginx-ingress/release.yaml`
+- - Install Nginx Ingress `kubectl apply -k kustomize/nginx-ingress/.`
