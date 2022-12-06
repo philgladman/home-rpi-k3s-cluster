@@ -1,5 +1,5 @@
 # home-rpi-k3s-cluster
-How to configure and create a K3s Kubernetes Cluster on raspberry pi(s), with MetalLB and Nginx Ingress installed, utilizing Kustomization and Kustomized Helm Charts.
+How to create a K3s Kubernetes Cluster on raspberry pi(s), with MetalLB and Nginx Ingress installed, utilizing Kustomization and Kustomized Helm Charts.
 
 ## Step 1.) - Raspberry Pi Setup
 - Use Raspberry Pi Imager (https://www.raspberrypi.com/software/) to write Ubuntu Server 20.04 LTS (64-BIT) to sd card
@@ -44,7 +44,6 @@ ethernets:
 ## Step 4.) - Install Nginx Ingress on K3s Cluster
 - Install Nginx Ingress `kubectl apply -k kustomize/nginx-ingress/.`
 
-
-## Misc
+### Misc Info
 - To get the latest metallb deployment, run the following command  before running kubectl apply `MetalLB_RTAG=$(curl -s https://api.github.com/repos/metallb/metallb/releases/latest|grep tag_name|cut -d '"' -f 4|sed 's/v//') && wget https://raw.githubusercontent.com/metallb/metallb/v$MetalLB_RTAG/config/manifests/metallb-native.yaml -O kustomize/metallb/metallb-deployment.yaml`
 - FYI - `kustomize/nginx-ingress/release.yaml` was created with the following command `helm template nginx-ingress charts/nginx-ingress -f kustomize/nginx-ingress/values.yaml --include-crds --debug > kustomize/nginx-ingress/release.yaml`
