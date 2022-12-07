@@ -37,7 +37,7 @@ ethernets:
 ## Step 3.) - Install MetalLB on K3s 
 - Clone this repo `git clone https://github.com/philgladman/home-rpi-k3s-cluster.git`
 - cd in the repo `cd home-rpi-k3s-cluster`
-- edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP. `sed 's/192.168.1.x-192.168.1.x/<your-ip-range>/g' kustomize/metallb/metallb-ip-pool.yaml`
+- edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP. `sed -i 's/192.168.1.x-192.168.1.x/<your-ip-range>/g' kustomize/metallb/metallb-ip-pool.yaml`
 - Install MetalLB `kubectl apply -k kustomize/metallb/.`
 - If you receive an error such as `ensure CRDs are installed first`, re run the kubectl apply command.
 
