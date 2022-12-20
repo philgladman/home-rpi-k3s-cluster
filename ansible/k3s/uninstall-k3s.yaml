@@ -1,0 +1,21 @@
+---
+
+- name: Unistall k3s
+  hosts: master
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: run k3s-killall.sh
+      shell: /usr/local/bin/k3s-killall.sh
+    - name: run k3s-uninstall.sh
+      shell: /usr/local/bin/k3s-uninstall.sh
+
+- name: Unistall k3s
+  hosts: workers
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: run k3s-killall.sh
+      shell: /usr/local/bin/k3s-killall.sh
+    - name: run k3s-agent-uninstall.sh
+      shell: /usr/local/bin/k3s-agent-uninstall.sh

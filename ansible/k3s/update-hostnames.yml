@@ -1,0 +1,53 @@
+- name: Update /etc/hosts
+  hosts: cluster
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: add master to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ master_ipaddress }} master"
+    - name: add worker01 to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ worker01_ipaddress }} worker01"
+    - name: add worker02 to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ worker02_ipaddress }} worker02"
+    - name: add worker03 to /etc/hosts
+      lineinfile:
+        path: /etc/hosts
+        line: "{{ worker03_ipaddress }} worker03"
+
+- name: Update master hostname
+  hosts: master
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update master hostname
+      command: hostnamectl set-hostname master
+
+- name: Update worker01 hostname
+  hosts: worker01
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update worker01 hostname
+      command: hostnamectl set-hostname worker01
+
+- name: Update worker02 hostname
+  hosts: worker02
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update worker02 hostname
+      command: hostnamectl set-hostname worker02
+
+- name: Update worker03 hostname
+  hosts: worker03
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update worker03 hostname
+      command: hostnamectl set-hostname worker03
