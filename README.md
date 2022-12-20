@@ -30,7 +30,7 @@ ethernets:
 - repeat for each raspberry pi
 
 ## Single Node Cluster
-- create k3s cluster without install teaefik (we will use nginx ingress instead later) `curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik" sh`
+- create k3s cluster without install teaefik (we will use nginx ingress instead later) `curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik --disable servicelb" sh`
 - copy newly created kubeconfig to home dir `mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config && sudo chown ubuntu:ubuntu ~/.kube/config`
 - export kubeconfig `echo "export KUBECONFIG=~/.kube/config" >> ~/.bashrc && source ~/.bashrc`
 - install helm `curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash`
@@ -55,7 +55,7 @@ ethernets:
 - If you have not done so already, clone this repo `git clone https://github.com/philgladman/home-rpi-k3s-cluster.git` and then cd into the repo `cd home-rpi-k3s-cluster`
 - edit `addresses:` field in the file `kustomize/metallb/metallb-ip-pool.yaml` to have the avaliable ip address on your home network for MetalLB to use. These IP Addresses need to be reserved, so they will not be given out via DHCP. `sed -i 's/192.168.1.x-192.168.1.x/<your-ip-range>/g' kustomize/metallb/metallb-ip-pool.yaml`
 - Install MetalLB `kubectl apply -k kustomize/metallb/.`
-- If you receive an error such as `ensure CRDs are installed first`, re run the kubectl apply command.
+- If you receive an error such as `ensure CRDs are installed first`, or a `Error from server...`, re run the kubectl apply command.
 
 ## Install Nginx Ingress on K3s Cluster
 - Install Nginx Ingress `kubectl apply -k kustomize/nginx-ingress/.`

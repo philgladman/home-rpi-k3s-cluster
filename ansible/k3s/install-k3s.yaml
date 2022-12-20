@@ -1,13 +1,13 @@
 ---
 
-- name: Prepare for and install k3s
-  hosts: cluster
-  become: yes
-  become_method: sudo
-  tasks:
-    - name: Update System Package Cache
-      apt:
-        update_cache: yes
+# - name: Prepare for and install k3s
+#   hosts: cluster
+#   become: yes
+#   become_method: sudo
+#   tasks:
+#     - name: Update System Package Cache
+#       apt:
+#         update_cache: yes
 
 - name: Install k3s on master
   hosts: master
@@ -15,7 +15,7 @@
   become_method: sudo
   tasks:
     - name: install k3s
-      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik" sh 
+      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik --disable servicelb" sh 
       
     - name: create .kube directory for master
       file:
