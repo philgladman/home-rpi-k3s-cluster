@@ -1,5 +1,5 @@
-master_ipaddress: 192.168.1.152
-worker01_ipaddress: 192.168.1.151
+master_ipaddress: 
+worker01_ipaddress: 
 worker02_ipaddress: 
 worker03_ipaddress: 
 ssh_private_key_file: /Users/Philgladman/.ssh/ansible-key

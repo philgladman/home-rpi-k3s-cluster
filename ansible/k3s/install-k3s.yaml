@@ -1,13 +1,13 @@
 ---
 
-# - name: Prepare for and install k3s
-#   hosts: cluster
-#   become: yes
-#   become_method: sudo
-#   tasks:
-#     - name: Update System Package Cache
-#       apt:
-#         update_cache: yes
+- name: Prepare for and install k3s
+  hosts: cluster
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update System Package Cache
+      apt:
+        update_cache: yes
 
 - name: Install k3s on master
   hosts: master
@@ -56,7 +56,7 @@
         dest: "{{ local_home_dir }}/node-token"
         flat: yes
 
-- name: Install RKE2 on workers
+- name: Install k3s on workers
   hosts: workers
   become: yes
   become_method: sudo
@@ -70,7 +70,7 @@
     - name: export token as env variable
       shell: "export TEST=$(cat /var/lib/rancher/k3s/server/token)"
 
-    - name: download and run RKE2 installer
+    - name: download and run k3s installer
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://"{{ master_ipaddress }}":6443 K3S_TOKEN=$(cat {{ home_dir }}/node-token) sh -
 
 - name: Node token clean up
