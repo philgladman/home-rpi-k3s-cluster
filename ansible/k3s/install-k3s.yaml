@@ -9,6 +9,10 @@
       apt:
         update_cache: yes
 
+  #  - name: Install extra modules
+  #     apt:
+  #       name: linux-modules-extra-raspi
+        
 - name: Install k3s on master
   hosts: master
   become: yes
@@ -66,9 +70,6 @@
         remote_src: no
         src: "{{ local_home_dir }}/node-token"
         dest: "{{ home_dir }}/node-token"
-
-    - name: export token as env variable
-      shell: "export TEST=$(cat /var/lib/rancher/k3s/server/token)"
 
     - name: download and run k3s installer
       shell: curl -sfL https://get.k3s.io | K3S_URL=https://"{{ master_ipaddress }}":6443 K3S_TOKEN=$(cat {{ home_dir }}/node-token) sh -

@@ -30,6 +30,7 @@ ethernets:
 - repeat for each raspberry pi
 
 ## Single Node Cluster
+- update the node `sudo apt update` and then install some extra modules with `sudo apt install linux-modules-extra-raspi`
 - create k3s cluster without install teaefik (we will use nginx ingress instead later) `curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik --disable servicelb" sh`
 - copy newly created kubeconfig to home dir `mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config && sudo chown ubuntu:ubuntu ~/.kube/config`
 - export kubeconfig `echo "export KUBECONFIG=~/.kube/config" >> ~/.bashrc && source ~/.bashrc`
@@ -45,6 +46,9 @@ ethernets:
 - cd into the repo `cd home-rpi-k3s-cluster`
 - edit the `ansible/group_vars/all` file with the ipaddresses for each node (pi), the file path of the new ssh key you kust created, and the home directory of your computer that the ssh key is on.
 - If you have more or less than 4 raspberry pis, update the `ansible/group_vars/all` file to more or less `workerXX_ipaddress` variables. You will need to do the same for `ansible/inventory.txt`
+- update the hostname of each node with this `ansible-playbook -i ansible/inventory.txt ansible/k3s/update-hostnames.yml`
+- Install k3s with this `ansible-playbook -i ansible/inventory.txt ansible/k3s/install-k3s.yaml`. This ansible playbook will update all the nodes, install k3s, join the agent nodes to the cluster, and then copy the kubeconfig to your local machine.
+- When the playbook finishes, run `kubectl get nodes` to see if your cluster is up and your nodes are ready.
 
 ## Edit Config for more/less than 4 pis
 - If you have more or less than 4 raspberry pis, update the `ansible/group_vars/all` file to more or less `workerXX_ipaddress` variables. 
