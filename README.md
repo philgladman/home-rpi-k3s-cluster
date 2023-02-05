@@ -39,7 +39,7 @@ ethernets:
 
 # Multi Node Cluster (4 Raspberry Pis)
 - For multi node clusters, we will deploy k3s with ansible `brew install ansible`
-- The current configuration is for a 4 pi cluster. IF you have more or less than 4 pis, do the steps in [here](README.md#step-1---edit-config-for-moreless-than-4-pis) first.
+- The current configuration is for a 4 pi cluster. IF you have more or less than 4 pis, do the steps in [here](README.md#edit-config-for-moreless-than-4-pis) first.
 - First we will need to create a ssh key locally that we will then copy to each raspberry pi.
 - run `ssh-keygen` on your computer, give it a path such as `/home/ubuntu/.ssh/ansible-key`, and hit enter for the passphrase inorder to create a key without a passphrase.
 - copy new `ansible-key` to each pi with this command `ssh-copy-id -i /home/ubuntu/.ssh/ansible-key ubuntu@<rpi-ip-address>`. You will need to do this for each pi.
