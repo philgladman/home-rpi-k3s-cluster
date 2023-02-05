@@ -30,6 +30,7 @@ ethernets:
 - repeat for each raspberry pi
 
 ## Single Node Cluster
+- Move on to next step for Multi Node Clusters
 - update the node `sudo apt update` and then install some extra modules with `sudo apt install linux-modules-extra-raspi`
 - create k3s cluster without install teaefik (we will use nginx ingress instead later) `curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik --disable servicelb" sh`
 - copy newly created kubeconfig to home dir `mkdir -p ~/.kube && sudo cp /etc/rancher/k3s/k3s.yaml ~/.kube/config && sudo chown ubuntu:ubuntu ~/.kube/config`
@@ -37,14 +38,14 @@ ethernets:
 - install helm `curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash`
 
 # Multi Node Cluster (4 Raspberry Pis)
-- For multi node clusters, we will deploy k3s with ansible
+- For multi node clusters, we will deploy k3s with ansible `brew install ansible`
 - The current configuration is for a 4 pi cluster. IF you have more or less than 4 pis, do the steps in [here]() first.
 - First we will need to create a ssh key locally that we will then copy to each raspberry pi.
 - run `ssh-keygen` on your computer, give it a path such as `/home/ubuntu/.ssh/ansible-key`, and hit enter for the passphrase inorder to create a key without a passphrase.
 - copy new `ansible-key` to each pi with this command `ssh-copy-id -i /home/ubuntu/.ssh/ansible-key ubuntu@<rpi-ip-address>`. You will need to do this for each pi.
 - clone this repo `git clone https://github.com/philgladman/home-rpi-k3s-cluster.git`
 - cd into the repo `cd home-rpi-k3s-cluster`
-- edit the `ansible/group_vars/all` file with the ipaddresses for each node (pi), the file path of the new ssh key you kust created, and the home directory of your computer that the ssh key is on.
+- edit the `ansible/group_vars/all` file with the ipaddresses for each node (pi), the file path of the new ssh key you just created, and the home directory of your computer that the ssh key is on.
 - If you have more or less than 4 raspberry pis, update the `ansible/group_vars/all` file to more or less `workerXX_ipaddress` variables. You will need to do the same for `ansible/inventory.txt`
 - update the hostname of each node with this `ansible-playbook -i ansible/inventory.txt ansible/k3s/update-hostnames.yml`
 - Install k3s with this `ansible-playbook -i ansible/inventory.txt ansible/k3s/install-k3s.yaml`. This ansible playbook will update all the nodes, install k3s, join the agent nodes to the cluster, and then copy the kubeconfig to your local machine.
