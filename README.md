@@ -45,6 +45,7 @@ ethernets:
 - copy new `ansible-key` to each pi with this command `ssh-copy-id -i /home/ubuntu/.ssh/ansible-key ubuntu@<rpi-ip-address>`. You will need to do this for each pi.
 - clone this repo `git clone https://github.com/philgladman/home-rpi-k3s-cluster.git`
 - cd into the repo `cd home-rpi-k3s-cluster`
+- edit the `ansible/group_vars/all` file with the location of your new `ssh_private_key_file`, as well as your `local_home_dir`
 - edit the `ansible/group_vars/all` file with the ipaddresses for each node (pi), the file path of the new ssh key you just created, and the home directory of your computer that the ssh key is on.
 - If you have more or less than 4 raspberry pis, update the `ansible/group_vars/all` file to more or less `workerXX_ipaddress` variables. You will need to do the same for `ansible/inventory.txt`
 - update the hostname of each node with this `ansible-playbook -i ansible/inventory.txt ansible/k3s/update-hostnames.yml`
