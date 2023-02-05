@@ -1,0 +1,8 @@
+master_ipaddress: 192.168.1.111
+worker01_ipaddress: 192.168.1.112
+worker02_ipaddress: 192.168.1.113
+worker03_ipaddress: 192.168.1.114
+ssh_private_key_file: /Users/Philgladman/.ssh/ansible-key
+home_dir: /home/ubuntu
+local_home_dir: /Users/Philgladman
+default_user: ubuntu

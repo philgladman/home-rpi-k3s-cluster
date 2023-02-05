@@ -1,0 +1,101 @@
+---
+
+- name: Prepare for and install k3s
+  hosts: cluster
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Update System Package Cache
+      apt:
+        update_cache: yes
+
+  #  - name: Install extra modules
+  #     apt:
+  #       name: linux-modules-extra-raspi
+        
+- name: Install k3s on master
+  hosts: master
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: install k3s
+      shell: curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --disable traefik --disable servicelb" sh 
+      
+    - name: create .kube directory for master
+      file:
+        path: "{{ home_dir }}/.kube"
+        state: directory
+        owner: "{{ default_user }}"
+        group: "{{ default_user }}"
+        mode: '0755'
+
+    - name: create config file
+      file:
+        path: "{{ home_dir }}/.kube/config"
+        state: touch
+        owner: "{{ default_user }}"
+        group: "{{ default_user }}"
+        mode: '0600'
+
+    - name: Copy config file to /home/ubuntu/.kube/config
+      command: "sudo cp /etc/rancher/k3s/k3s.yaml {{ home_dir }}/.kube/config"
+
+    - name: add kubectl to path
+      shell: "echo export KUBECONFIG=~/.kube/config >> {{ home_dir }}/.bashrc"
+
+    - name: Copy token on master to home dir
+      shell: "sudo cp /var/lib/rancher/k3s/server/node-token {{ home_dir }}/node-token"
+
+    - name: change token file perms
+      file: 
+        path: "{{ home_dir }}/node-token"
+        state: touch
+        owner: "{{ default_user }}"
+        group: "{{ default_user }}"
+        mode: '0644'
+    
+    - name: Copy token from master, to local
+      fetch:
+        src: "{{ home_dir }}/node-token"
+        dest: "{{ local_home_dir }}/node-token"
+        flat: yes
+
+- name: Install k3s on workers
+  hosts: workers
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: Copy token from local, to workers
+      copy:
+        remote_src: no
+        src: "{{ local_home_dir }}/node-token"
+        dest: "{{ home_dir }}/node-token"
+
+    - name: download and run k3s installer
+      shell: curl -sfL https://get.k3s.io | K3S_URL=https://"{{ master_ipaddress }}":6443 K3S_TOKEN=$(cat {{ home_dir }}/node-token) sh -
+
+- name: Node token clean up
+  hosts: cluster
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: delete node token
+      command: sudo rm {{ home_dir }}/node-token
+
+- name: Copy kube config from master to local
+  hosts: master
+  tasks:
+    # Copy remote file (master:/home/ubuntu/.kube/config) into
+    # /home/ubuntu/.kube/config on local machine, which is the bastion
+    - fetch:
+        src: "{{ home_dir }}/.kube/config"
+        dest: "{{ local_home_dir }}/.kube/config"
+        flat: yes
+
+- name: Copy kube config from master to local
+  hosts: localhost
+  tasks:
+    - replace:
+        path: "{{ local_home_dir }}/.kube/config"
+        regexp: '127\.0\.0\.1'
+        replace: "{{ master_ipaddress }}"

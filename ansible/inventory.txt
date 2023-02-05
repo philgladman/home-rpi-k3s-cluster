@@ -1,0 +1,12 @@
+[master]
+master ansible_host="{{ master_ipaddress }}" ansible_connection=ssh ansible_user="{{ default_user }}"  ansible_ssh_private_key_file="{{ ssh_private_key_file }}"
+
+[workers]
+worker01 ansible_host="{{ worker01_ipaddress }}" ansible_connection=ssh ansible_user="{{ default_user }}"  ansible_ssh_private_key_file="{{ ssh_private_key_file }}"
+worker02 ansible_host="{{ worker02_ipaddress }}" ansible_connection=ssh ansible_user="{{ default_user }}"  ansible_ssh_private_key_file="{{ ssh_private_key_file }}"
+worker03 ansible_host="{{ worker03_ipaddress }}" ansible_connection=ssh ansible_user="{{ default_user }}"  ansible_ssh_private_key_file="{{ ssh_private_key_file }}"
+
+
+[cluster:children]
+master
+workers
